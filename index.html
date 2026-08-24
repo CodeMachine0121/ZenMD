@@ -72,10 +72,14 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* .wrap owns the gutter and nothing else. Using the `padding` shorthand here
+     would also pin the block axis to zero, and since a class beats an element
+     selector it would quietly delete the padding of anything it is combined
+     with — which is how the footer lost its breathing room. */
   .wrap {
     max-width: 1140px;
     margin: 0 auto;
-    padding: 0 clamp(1.2rem, 5vw, 3rem);
+    padding-inline: clamp(1.2rem, 5vw, 3rem);
   }
   .narrow { max-width: 46rem; }
 
@@ -114,7 +118,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: .9rem 0;
+    padding-block: .9rem;
   }
   .brand {
     font-family: var(--serif);
@@ -150,7 +154,7 @@
   .top a.jump:hover { background: var(--ink); color: var(--paper); }
 
   /* ── hero ──────────────────────────────────────────────────────── */
-  .hero { padding: clamp(3.5rem, 9vw, 7rem) 0 clamp(2.5rem, 6vw, 4rem); }
+  .hero { padding-block: clamp(3.5rem, 9vw, 7rem) clamp(2.5rem, 6vw, 4rem); }
 
   h1 {
     font-family: var(--serif);
@@ -219,7 +223,7 @@
   }
 
   /* ── claims ────────────────────────────────────────────────────── */
-  .band { padding: clamp(3rem, 7vw, 5.5rem) 0; border-top: 1px solid var(--rule); }
+  .band { padding-block: clamp(3rem, 7vw, 5.5rem); border-top: 1px solid var(--rule); }
   .band--sunk { background: var(--sunk); }
 
   h2 {
@@ -424,7 +428,7 @@
   /* ── footer ────────────────────────────────────────────────────── */
   footer {
     border-top: 1px solid var(--rule);
-    padding: 2.5rem 0 4rem;
+    padding-block: 2.5rem 4rem;
     font-size: .85rem;
     color: var(--faint);
     display: flex;
