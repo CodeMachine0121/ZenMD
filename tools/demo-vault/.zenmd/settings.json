@@ -1,0 +1,24 @@
+{
+  "indentation": {
+    "style": "spaces",
+    "width": 2
+  },
+  "previewPanel": {
+    "visible": true,
+    "widthRatio": 0.5,
+    "toggleShortcut": null
+  },
+  "fontSizes": {
+    "editor": 15,
+    "preview": 15
+  },
+  "sidebar": {
+    "collapsedSections": []
+  },
+  "lastOpened": {
+    "workspaceName": "技術筆記",
+    "articleFileName": "electron-與-tauri-的取捨.md"
+  },
+  "interfaceLanguage": null,
+  "theme": "followSystem"
+}

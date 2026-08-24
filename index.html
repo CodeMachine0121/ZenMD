@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZenMD — 寫中文的人用的寫作工具</title>
+<meta name="description" content="本機桌面版中文寫作工具。把零碎的知識點，一路帶到寫得完整、可以拿出去的成品。中文輸入永遠不出錯。">
+
+<meta property="og:title" content="ZenMD — 寫中文的人用的寫作工具">
+<meta property="og:description" content="把零碎的知識點，一路帶到可以拿出去的成品。中文輸入永遠不出錯。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="screenshots/01-editor-and-preview.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@700;900&display=swap">
+
+<style>
+  :root {
+    --paper:     #FBFAF8;
+    --raised:    #FFFFFF;
+    --sunk:      #F2EFEA;
+    --ink:       #16181B;
+    --ink-soft:  #43474D;
+    --muted:     #7B7A76;
+    --faint:     #A3A19C;
+    --rule:      #E4E0DA;
+    --seal:      #BF3B2E;
+    --seal-wash: #FBEDEA;
+
+    --serif: "Noto Serif TC", "Songti TC", serif;
+    --sans:  "Noto Sans TC", -apple-system, "PingFang TC", sans-serif;
+    --mono:  "DM Mono", "SF Mono", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #131417;
+      --raised:    #1A1C20;
+      --sunk:      #202329;
+      --ink:       #EDEBE7;
+      --ink-soft:  #CBC8C3;
+      --muted:     #9A9793;
+      --faint:     #706D69;
+      --rule:      #2B2E34;
+      --seal:      #E4614F;
+      --seal-wash: #2B1A17;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:     #131417;
+    --raised:    #1A1C20;
+    --sunk:      #202329;
+    --ink:       #EDEBE7;
+    --ink-soft:  #CBC8C3;
+    --muted:     #9A9793;
+    --faint:     #706D69;
+    --rule:      #2B2E34;
+    --seal:      #E4614F;
+    --seal-wash: #2B1A17;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 clamp(1.2rem, 5vw, 3rem);
+  }
+  .narrow { max-width: 46rem; }
+
+  p { margin: 0; }
+  strong { font-weight: 500; color: var(--ink); }
+  code {
+    font-family: var(--mono);
+    font-size: .88em;
+    background: var(--sunk);
+    border-radius: 3px;
+    padding: .08em .35em;
+  }
+  .band--sunk code { background: var(--raised); }
+  em { font-style: normal; color: var(--seal); }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .74rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--seal);
+    margin: 0;
+  }
+
+  /* ── masthead ──────────────────────────────────────────────────── */
+  header.top {
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+  }
+  .top__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .9rem 0;
+  }
+  .brand {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 1.25rem;
+    letter-spacing: .01em;
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+  }
+  .brand .seal {
+    width: 1.35rem; height: 1.35rem;
+    border-radius: 3px;
+    background: var(--seal);
+    color: #fff;
+    font-family: var(--serif);
+    font-size: .78rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    line-height: 1;
+  }
+  .top a.jump {
+    font-family: var(--mono);
+    font-size: .8rem;
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+    padding: .4rem .85rem;
+    white-space: nowrap;
+  }
+  .top a.jump:hover { background: var(--ink); color: var(--paper); }
+
+  /* ── hero ──────────────────────────────────────────────────────── */
+  .hero { padding: clamp(3.5rem, 9vw, 7rem) 0 clamp(2.5rem, 6vw, 4rem); }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(2.3rem, 6.2vw, 4.1rem);
+    line-height: 1.28;
+    letter-spacing: -.015em;
+    margin: 1.4rem 0 0;
+    text-wrap: balance;
+  }
+  h1 .thin { color: var(--muted); font-weight: 700; }
+
+  .lede {
+    margin-top: 1.6rem;
+    font-size: clamp(1.02rem, 2.1vw, 1.16rem);
+    color: var(--ink-soft);
+    max-width: 34em;
+  }
+
+  /* the specimen: the product's whole thesis, set in type */
+  .specimen {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--raised);
+    padding: clamp(1.6rem, 4vw, 2.6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+  .specimen__line {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: clamp(.9rem, 3vw, 1.8rem);
+    font-family: var(--serif);
+    font-size: clamp(1.7rem, 5vw, 2.9rem);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .composing {
+    color: var(--ink-soft);
+    border-bottom: 2px dotted var(--seal);
+    padding-bottom: .12em;
+    letter-spacing: .06em;
+    position: relative;
+  }
+  .caret {
+    display: inline-block;
+    width: 2px;
+    height: .95em;
+    background: var(--seal);
+    margin-left: .12em;
+    vertical-align: -.1em;
+    animation: blink 1.15s step-end infinite;
+  }
+  @keyframes blink { 0%, 55% { opacity: 1 } 56%, 100% { opacity: 0 } }
+  .becomes { color: var(--faint); font-size: .62em; font-weight: 700; }
+  .committed { color: var(--ink); letter-spacing: .04em; }
+
+  .specimen__caption {
+    font-size: .95rem;
+    color: var(--muted);
+    max-width: 40em;
+    line-height: 1.85;
+  }
+
+  /* ── claims ────────────────────────────────────────────────────── */
+  .band { padding: clamp(3rem, 7vw, 5.5rem) 0; border-top: 1px solid var(--rule); }
+  .band--sunk { background: var(--sunk); }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+    line-height: 1.45;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .claims {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  @media (min-width: 860px) { .claims { grid-template-columns: repeat(3, 1fr); } }
+  .claim {
+    background: var(--paper);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+  }
+  .claim h3 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.16rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .claim p { font-size: .93rem; color: var(--muted); line-height: 1.85; }
+
+  /* ── shots ─────────────────────────────────────────────────────── */
+  .shot { margin-top: clamp(2.5rem, 6vw, 4.5rem); display: flex; flex-direction: column; gap: 1.1rem; }
+  .shot__head { display: flex; flex-direction: column; gap: .5rem; max-width: 44em; }
+  .shot__head h3 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(1.15rem, 2.6vw, 1.45rem);
+    line-height: 1.55;
+    margin: 0;
+  }
+  .shot__head p { font-size: .95rem; color: var(--muted); }
+  .shot figure { margin: 0; }
+  .shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--raised);
+  }
+
+  /* ── honesty ───────────────────────────────────────────────────── */
+  .limits { margin-top: clamp(1.8rem, 4vw, 2.6rem); display: flex; flex-direction: column; gap: 1px;
+            background: var(--rule); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+  .limit { background: var(--paper); padding: 1.1rem clamp(1.2rem, 3vw, 1.7rem); display: flex; gap: 1rem; align-items: baseline; }
+  .limit .mark { color: var(--seal); font-family: var(--mono); font-size: .9rem; flex: none; }
+  .limit p { font-size: .94rem; color: var(--ink-soft); line-height: 1.8; }
+
+  /* ── signup ────────────────────────────────────────────────────── */
+  .signup {
+    margin-top: clamp(2rem, 5vw, 3rem);
+    border: 1px solid var(--ink);
+    border-radius: 6px;
+    background: var(--raised);
+    padding: clamp(1.8rem, 4.5vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .price { display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap; }
+  .price b {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(2.1rem, 5.5vw, 3rem);
+    line-height: 1;
+  }
+  .price .unit { font-family: var(--mono); font-size: .9rem; color: var(--muted); }
+  .price .tag {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--seal);
+    background: var(--seal-wash);
+    padding: .25rem .6rem;
+    border-radius: 3px;
+  }
+
+  .tiers {
+    margin-top: clamp(2rem, 4vw, 2.8rem);
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  @media (min-width: 720px) { .tiers { grid-template-columns: 1fr 1fr; } }
+  .tier {
+    background: var(--paper);
+    padding: clamp(1.5rem, 3.5vw, 2.2rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .tier--paid { background: var(--raised); }
+  .tier__name {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tier--paid .tier__name { color: var(--seal); }
+  .tier__annual { font-size: .87rem; color: var(--muted); margin-top: -.5rem; }
+  .tier ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .55rem; }
+  .tier li { font-size: .94rem; color: var(--ink-soft); display: flex; gap: .6rem; align-items: baseline; line-height: 1.75; }
+  .tier li .tick { color: var(--seal); flex: none; font-size: .85rem; }
+  .tier__soon {
+    margin-top: auto;
+    font-family: var(--mono);
+    font-size: .74rem;
+    letter-spacing: .04em;
+    color: var(--seal);
+    background: var(--seal-wash);
+    border-radius: 3px;
+    padding: .5rem .7rem;
+    line-height: 1.7;
+  }
+  .tier__quote {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: var(--ink);
+    border-left: 2px solid var(--seal);
+    padding-left: .9rem;
+  }
+
+  form { display: flex; flex-direction: column; gap: .8rem; }
+  .field { display: flex; gap: .7rem; flex-wrap: wrap; }
+  input[type="email"] {
+    flex: 1 1 16rem;
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: .8rem 1rem;
+  }
+  input[type="email"]:focus-visible { outline: 2px solid var(--seal); outline-offset: 1px; border-color: transparent; }
+  button {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--paper);
+    background: var(--ink);
+    border: 0;
+    border-radius: 4px;
+    padding: .8rem 1.7rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  button:hover { background: var(--seal); }
+  button:focus-visible { outline: 2px solid var(--seal); outline-offset: 2px; }
+  .promise { font-size: .86rem; color: var(--muted); line-height: 1.8; }
+  .also {
+    display: flex;
+    gap: .6rem;
+    align-items: flex-start;
+    font-size: .9rem;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    cursor: pointer;
+  }
+  .also input { margin: .45rem 0 0; accent-color: var(--seal); flex: none; }
+
+  /* ── footer ────────────────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2.5rem 0 4rem;
+    font-size: .85rem;
+    color: var(--faint);
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top__row">
+    <div class="brand"><span class="seal">禪</span>ZenMD</div>
+    <a class="jump" href="#signup">加入候補名單</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── hero ─────────────────────────────────────────────────────── -->
+  <section class="wrap hero">
+    <p class="eyebrow">macOS · 本機 · 離線可用</p>
+    <h1>寫中文的人，<br>值得一個不會吃字的編輯器</h1>
+    <p class="lede">
+      ZenMD 是一個本機桌面版中文寫作工具——把零碎的知識點，一路帶到寫得完整、可以拿出去的成品。
+    </p>
+
+    <div class="specimen">
+      <div class="specimen__line">
+        <span class="composing">ㄊㄞˊ ㄨㄢ<i class="caret"></i></span>
+        <span class="becomes">選字之後</span>
+        <span class="committed">台灣</span>
+      </div>
+      <p class="specimen__caption">
+        左邊那個狀態叫<strong>「組字中」</strong>。它不是「還沒輸入」，也不是「已經輸入」——是中文才有的<em>第三種狀態</em>。
+        編輯器若在這段期間去動文件內容，輸入法的狀態機就會被打斷：候選視窗跑掉、吃字、字序錯亂、按一次 undo 整段消失。
+        <strong>ZenMD 把這件事寫成規格的第 6 節，不是相容性議題。</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── claims ───────────────────────────────────────────────────── -->
+  <section class="band">
+    <div class="wrap">
+      <h2 class="narrow">三件它跟別人不一樣的事</h2>
+
+      <div class="claims">
+        <div class="claim">
+          <h3>筆記與文章的分界是假的</h3>
+          <p>
+            同一段知識，今天是隨手記下的一行，三個月後長成一篇文章。
+            中間沒有任何一個時刻可以說「它從筆記變成文章了」。
+            ZenMD 守的是<strong>中間那段路</strong>，不是兩個類別的其中一邊。
+          </p>
+        </div>
+        <div class="claim">
+          <h3>眼前只有正文</h3>
+          <p>
+            標題、標籤、狀態這些 metadata，在建立的時候用表單填完，
+            之後寫作時<strong>一個 YAML 符號都看不到</strong>。
+            它們還是好好地寫在檔頭，只是不擋你的路。
+          </p>
+        </div>
+        <div class="claim">
+          <h3>檔案永遠是你的</h3>
+          <p>
+            一則知識點就是一個 <code>.md</code> 檔，圖片存在旁邊的 <code>images/</code>，
+            正文裡永遠是相對路徑。
+            <strong>整包搬去 Obsidian、丟上 Git、餵給 Hugo 都還是同一份東西。</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── shots ────────────────────────────────────────────────────── -->
+  <section class="band band--sunk">
+    <div class="wrap">
+      <h2 class="narrow">它長什麼樣子</h2>
+
+      <div class="shot">
+        <div class="shot__head">
+          <h3>左邊是你的東西，中間在寫，右邊是成品</h3>
+          <p>Markdown 原始碼配即時預覽。預覽收起來的時候，編輯區吃掉整個寬度。</p>
+        </div>
+        <figure>
+          <img src="screenshots/01-editor-and-preview.png"
+               alt="ZenMD 主畫面：左側是 workspace、狀態與標籤，中間是文章清單，右邊是編輯區與即時預覽並排" loading="lazy">
+        </figure>
+      </div>
+
+      <div class="shot">
+        <div class="shot__head">
+          <h3>打一個 <code>/</code>，常用的形狀就落下來</h3>
+          <p>標題、連結、圖片、表格、任務項。游標停在第一個要填的地方，直接打字就是了。<strong>組字中打 <code>/</code> 什麼都不會發生</strong>——那時候的按鍵屬於輸入法。</p>
+        </div>
+        <figure>
+          <img src="screenshots/02-snippet-menu.png"
+               alt="編輯區裡打斜線之後跳出的片段選單，列出 H1 到 H6、Link、Image、Table、Checkbox" loading="lazy">
+        </figure>
+      </div>
+
+      <div class="shot">
+        <div class="shot__head">
+          <h3>四套主題，跟著系統或自己挑</h3>
+          <p>淡色、暗色、森林、禪。連片段選單的每一個顏色都跟著走。</p>
+        </div>
+        <figure>
+          <img src="screenshots/03-zen-theme.png"
+               alt="ZenMD 套用禪主題後的畫面，整體轉為溫暖的紙色調" loading="lazy">
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── honesty ──────────────────────────────────────────────────── -->
+  <section class="band">
+    <div class="wrap narrow">
+      <h2>先講清楚它現在還不能做什麼</h2>
+      <p style="margin-top:1rem;color:var(--muted);font-size:.97rem">
+        與其等你裝了才發現，不如現在就寫在這裡。
+      </p>
+
+      <div class="limits">
+        <div class="limit"><span class="mark">01</span><p><strong>只有 macOS，而且只有 Apple Silicon。</strong>Intel Mac、Windows、Linux 目前都沒有。</p></div>
+        <div class="limit"><span class="mark">02</span><p><strong>第一次開啟要手動放行。</strong>還沒有 Apple 開發者憑證，所以要去「系統設定 → 隱私權與安全性」按一下允許。</p></div>
+        <div class="limit"><span class="mark">03</span><p><strong>同步與發佈還沒做好，手機版也還沒有。</strong>那是接下來要做的、也是唯一要收訂閱的部分。在它上線之前，要跨裝置請自己把資料夾放進 iCloud 或 Git——因為它就只是一堆 <code>.md</code> 檔。</p></div>
+        <div class="limit"><span class="mark">04</span><p><strong>沒有全文搜尋。</strong>目前只能用標題、標籤、狀態篩選。這是排最前面要補的。</p></div>
+        <div class="limit"><span class="mark">05</span><p><strong>不做雙向連結、graph view。</strong>那是知識庫的做法，ZenMD 在意的是把一則知識點寫完、寫到能拿出去。</p></div>
+        <div class="limit"><span class="mark">06</span><p><strong>一個人做的。</strong>不會有 24 小時客服，但你寄信我會回。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── signup ───────────────────────────────────────────────────── -->
+  <section class="band band--sunk" id="signup">
+    <div class="wrap narrow">
+      <h2>App 是免費的。雲端功能才收訂閱。</h2>
+      <p style="margin-top:1rem;color:var(--muted);font-size:.97rem;line-height:1.85">
+        本機寫作的每一個功能都免費，而且不限篇數——因為你的檔案本來就在你自己的硬碟上，
+        我沒有理由為此收你錢。要付錢的是<strong>需要我持續維護伺服器的那些事</strong>。
+      </p>
+
+      <div class="tiers">
+        <div class="tier">
+          <span class="tier__name">免費</span>
+          <div class="price"><b>NT$0</b><span class="unit">永遠</span></div>
+          <ul>
+            <li><span class="tick">✦</span>本機寫作的全部功能</li>
+            <li><span class="tick">✦</span>不限文章數、不限 workspace</li>
+            <li><span class="tick">✦</span>四套主題、片段選單、貼上圖片</li>
+            <li><span class="tick">✦</span>檔案永遠是你的，隨時可以走</li>
+          </ul>
+        </div>
+
+        <div class="tier tier--paid">
+          <span class="tier__name">訂閱</span>
+          <div class="price"><b>NT$149</b><span class="unit">/ 月</span></div>
+          <p class="tier__annual">或 NT$1,490 / 年——等於付十個月</p>
+          <ul>
+            <li><span class="tick">✦</span>免費版的全部</li>
+            <li><span class="tick">✦</span>多機同步</li>
+            <li><span class="tick">✦</span>一鍵發佈成網頁，傳給誰都打得開</li>
+            <li><span class="tick">✦</span>版本歷史</li>
+          </ul>
+          <p class="tier__quote">「我三個禮拜前刪掉的那一段，找得回來。」</p>
+          <p class="tier__soon">同步與發佈還在開發中。<br>上線之前不會跟你收任何一毛錢。</p>
+        </div>
+      </div>
+
+      <div class="signup">
+        <!--
+          把 action 換成你的表單服務（Formspree / Buttondown / ConvertKit 都行）。
+          沒換之前這個表單不會送到任何地方。
+
+          價格若改動：免費那欄的 NT$0、訂閱那欄的 NT$149 與 NT$1,490，共三處。
+        -->
+        <form action="REPLACE_WITH_YOUR_FORM_ENDPOINT" method="POST">
+          <div class="field">
+            <label for="email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">你的 email</label>
+            <input id="email" type="email" name="email" required placeholder="你的 email" autocomplete="email">
+            <button type="submit">可以下載時通知我</button>
+          </div>
+
+          <label class="also">
+            <input type="checkbox" name="wants_cloud" value="yes">
+            <span>同步與發佈上線的時候也通知我——我有興趣付費使用。</span>
+          </label>
+
+          <p class="promise">
+            只會寄「可以下載了」跟「雲端功能上線了」這兩封。
+            <strong>沒有電子報、不轉給任何人、隨時回信說不要就移除。</strong>
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <div>ZenMD · 一個本機桌面版中文寫作工具</div>
+  <div>畫面截自實際執行的應用程式，內容為示範用資料。</div>
+</footer>
+
+</body>
+</html>
