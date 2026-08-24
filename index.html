@@ -605,11 +605,11 @@
         <!--
           Buttondown 的內嵌表單。
 
-          1. 把 REPLACE_WITH_YOUR_BUTTONDOWN_USERNAME 換成你的帳號名稱。
-             最保險的做法是去 Buttondown 後台複製它給的內嵌表單網址，
-             整段 action 貼過來——不要相信這裡拼出來的網址。
+          1. action 的帳號名稱 coding_afternoon 取自 Buttondown 後台給的內嵌表單。
+             它是公開識別碼，不是金鑰——後台那段程式碼裡本來就沒有金鑰。
 
-          2. 那個勾選框送的是 metadata__wants_cloud。**先自己送一筆測試**，
+          2. tag 與 metadata__wants_cloud 是後台那段沒有的，我們自己加的。
+             **先自己送一筆測試**，
              到後台確認這個欄位真的出現在訂閱者身上；沒出現的話改用 tag。
 
           3. 沒勾的時候瀏覽器不會送出這個欄位，所以後台看到的是「有這個欄位的人」，
@@ -618,7 +618,7 @@
           價格若改動：上面 tiers 裡的 NT$0、NT$149、NT$1,490 共三處。
         -->
         <form id="waitlist"
-              action="https://buttondown.com/api/emails/embed-subscribe/REPLACE_WITH_YOUR_BUTTONDOWN_USERNAME"
+              action="https://buttondown.com/api/emails/embed-subscribe/coding_afternoon"
               method="post"
               target="bd-sink">
           <input type="hidden" name="embed" value="1">
