@@ -20,6 +20,7 @@ screenshots/                      截自實際執行的 App
   02-snippet-menu.png             片段選單
   03-zen-theme.png                禪主題
   04-zen-mode.png                 zen mode —— hero 用的那張
+  *--narrow.png                   同樣四張，但用 880px 視窗截的（手機版）
 tools/
   captureScreenshots.mjs          用 Playwright 驅動 Electron 取截圖
   previewLanding.mjs              用 Chromium 把 index.html 渲染出來看
@@ -164,3 +165,24 @@ node tools/previewLanding.mjs    # 或渲染成 PNG 檢查（含 full page）
 
 **深淺色主題都畫過**：色彩全部走 CSS 變數，深色在 `prefers-color-scheme`
 與 `[data-theme]` 各定義一次。
+
+## 手機版
+
+**每張截圖有兩個版本。** `<picture>` 在 720px 以下換成 `--narrow`：
+
+| | 桌機 | 手機 |
+| :--- | :--- | :--- |
+| 截圖來源 | 1440px 視窗 | **880px 視窗** |
+| 在 390px 手機上 | 縮 4 倍，字全部糊掉 | 縮 2.5 倍，3x 螢幕上清晰 |
+
+**為什麼不用裁的**：裁切會把句子從右邊切斷，看起來像圖壞了。
+用窄視窗重截，App 自己會排版，**每一行都在它決定的地方結束**。
+改動截圖之後 `node tools/captureScreenshots.mjs` 會兩種一起產生。
+
+**「刻意不做的事」那張表在手機上不是表格**——720px 以下改成上下堆疊的成對區塊，
+兩欄擠在 390px 裡會變成兩條爛掉的文字。
+
+> ⚠️ **只驗溢出和留白會漏掉真正的問題。** 這一頁曾經在「橫向溢出 0、
+> 左右留白對稱」全部通過的狀態下，手機版其實是壞的——圖看不懂、表格擠爛。
+> **改完一定要用實際像素看一遍**（`node tools/previewLanding.mjs` 之外，
+> 用 390px × deviceScaleFactor 3 截圖來看）。

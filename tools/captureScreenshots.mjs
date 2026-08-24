@@ -172,5 +172,49 @@ try {
   console.log('  (zen mode:', failure.message, ')');
 }
 
+// ── 5. the same claims again, for a phone ─────────────────────────────────
+// Not crops of the wide shots: a crop cuts a sentence in half at the right
+// edge, which reads as a broken picture. Narrowing the window instead lets the
+// app lay itself out, so every line ends where the app decided it should.
+async function resize(width, height) {
+  await application.evaluate(async ({ BrowserWindow }, size) => {
+    const [first] = BrowserWindow.getAllWindows();
+    first.setBounds({ x: 0, y: 0, width: size.w, height: size.h });
+  }, { w: width, h: height });
+  await window.waitForTimeout(600);
+}
+
+try {
+  await resize(880, 720);
+
+  // zen mode on prose — already there from step 4
+  await shoot('04-zen-mode--narrow');
+
+  // editor beside preview, with the two side columns still dismissed
+  await window.locator('.zenmd-panel-chrome__arrangements button').nth(1).click();
+  await window.waitForTimeout(800);
+  await shoot('01-editor-and-preview--narrow');
+
+  // the slash menu, back on the article that has room below it
+  await window.locator('.zenmd-panel-chrome__arrangements button').first().click();
+  await window.waitForTimeout(600);
+  const editor = window.locator('.cm-content').first();
+  await editor.click();
+  await window.keyboard.press('ControlOrMeta+End');
+  await window.keyboard.press('Enter');
+  await window.keyboard.type('/', { delay: 80 });
+  await window.waitForTimeout(800);
+  await shoot('02-snippet-menu--narrow');
+  await window.keyboard.press('Escape');
+  await window.keyboard.press('Backspace');
+
+  // the warm theme with the columns back, so it reads as a different skin
+  await window.locator('.zenmd-panel-chrome__control[aria-pressed]').first().click();
+  await window.waitForTimeout(900);
+  await shoot('03-zen-theme--narrow');
+} catch (failure) {
+  console.log('  (narrow pass:', failure.message, ')');
+}
+
 await application.close();
 console.log('done →', shots);
