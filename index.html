@@ -260,13 +260,6 @@
     background: var(--raised);
   }
 
-  /* ── honesty ───────────────────────────────────────────────────── */
-  .limits { margin-top: clamp(1.8rem, 4vw, 2.6rem); display: flex; flex-direction: column; gap: 1px;
-            background: var(--rule); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
-  .limit { background: var(--paper); padding: 1.1rem clamp(1.2rem, 3vw, 1.7rem); display: flex; gap: 1rem; align-items: baseline; }
-  .limit .mark { color: var(--seal); font-family: var(--mono); font-size: .9rem; flex: none; }
-  .limit p { font-size: .94rem; color: var(--ink-soft); line-height: 1.8; }
-
   /* ── signup ────────────────────────────────────────────────────── */
   .signup {
     margin-top: clamp(2rem, 5vw, 3rem);
@@ -386,6 +379,30 @@
     cursor: pointer;
   }
   .also input { margin: .45rem 0 0; accent-color: var(--seal); flex: none; }
+
+  .ask { display: flex; flex-direction: column; gap: .5rem; margin-top: .4rem; }
+  .ask label { font-size: .92rem; color: var(--ink-soft); display: flex; gap: .6rem; align-items: baseline; }
+  .ask label span {
+    font-family: var(--mono);
+    font-size: .66rem;
+    letter-spacing: .1em;
+    color: var(--faint);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: .05rem .35rem;
+  }
+  .ask input {
+    font-family: var(--sans);
+    font-size: .95rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: .7rem .9rem;
+    width: 100%;
+  }
+  .ask input:focus-visible { outline: 2px solid var(--seal); outline-offset: 1px; border-color: transparent; }
+  .ask input::placeholder { color: var(--faint); }
 
   .sr-only {
     position: absolute; width: 1px; height: 1px;
@@ -542,25 +559,6 @@
     </div>
   </section>
 
-  <!-- ── honesty ──────────────────────────────────────────────────── -->
-  <section class="band band--sunk">
-    <div class="wrap narrow">
-      <h2>先講清楚它現在還不能做什麼</h2>
-      <p style="margin-top:1rem;color:var(--muted);font-size:.97rem">
-        與其等你裝了才發現，不如現在就寫在這裡。
-      </p>
-
-      <div class="limits">
-        <div class="limit"><span class="mark">01</span><p><strong>只有 macOS，而且只有 Apple Silicon。</strong>Intel Mac、Windows、Linux 目前都沒有。</p></div>
-        <div class="limit"><span class="mark">02</span><p><strong>第一次開啟要手動放行。</strong>還沒有 Apple 開發者憑證，所以要去「系統設定 → 隱私權與安全性」按一下允許。</p></div>
-        <div class="limit"><span class="mark">03</span><p><strong>同步與發佈還沒做好，手機版也還沒有。</strong>那是接下來要做的、也是唯一要收訂閱的部分。在它上線之前，要跨裝置請自己把資料夾放進 iCloud 或 Git——因為它就只是一堆 <code>.md</code> 檔。</p></div>
-        <div class="limit"><span class="mark">04</span><p><strong>沒有全文搜尋。</strong>目前只能用標題、標籤、狀態篩選。這是排最前面要補的。</p></div>
-        <div class="limit"><span class="mark">05</span><p><strong>沒有雙向連結、graph view、外掛。</strong>這一條短期內不會變——那是上面那張表的最後一列，不是還沒做。</p></div>
-        <div class="limit"><span class="mark">06</span><p><strong>一個人做的。</strong>不會有 24 小時客服，但你寄信我會回。</p></div>
-      </div>
-    </div>
-  </section>
-
   <!-- ── signup ───────────────────────────────────────────────────── -->
   <section class="band" id="signup">
     <div class="wrap narrow">
@@ -631,6 +629,15 @@
             <span>同步與發佈上線的時候也通知我——我有興趣付費使用。</span>
           </label>
 
+          <div class="ask">
+            <label for="wants">最想要的一個功能？<span>選填</span></label>
+            <input id="wants" type="text" name="metadata__wants" maxlength="140"
+                   placeholder="例如：全文搜尋、Windows 版、匯出成 PDF⋯⋯">
+          </div>
+
+          <p class="promise">
+            目前只有 <strong>macOS（Apple Silicon）</strong>——用其他平台的話，在上面那一欄講一聲，我在看有多少人在等。
+          </p>
           <p class="promise">
             只會寄「可以下載了」跟「雲端功能上線了」這兩封。
             <strong>沒有電子報、不轉給任何人、隨時回信說不要就移除。</strong>
