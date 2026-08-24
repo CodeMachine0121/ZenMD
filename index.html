@@ -198,54 +198,6 @@
     max-width: 30em;
   }
 
-  /* the specimen, now evidence rather than headline */
-  .specimen {
-    margin-top: clamp(2rem, 4vw, 2.8rem);
-    border: 1px solid var(--rule);
-    border-radius: 6px;
-    background: var(--raised);
-    padding: clamp(1.6rem, 4vw, 2.6rem);
-    display: flex;
-    flex-direction: column;
-    gap: 1.35rem;
-  }
-  .specimen__line {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: clamp(.9rem, 3vw, 1.8rem);
-    font-family: var(--serif);
-    font-size: clamp(1.7rem, 5vw, 2.9rem);
-    font-weight: 700;
-    line-height: 1.4;
-  }
-  .composing {
-    color: var(--ink-soft);
-    border-bottom: 2px dotted var(--seal);
-    padding-bottom: .12em;
-    letter-spacing: .06em;
-    position: relative;
-  }
-  .caret {
-    display: inline-block;
-    width: 2px;
-    height: .95em;
-    background: var(--seal);
-    margin-left: .12em;
-    vertical-align: -.1em;
-    animation: blink 1.15s step-end infinite;
-  }
-  @keyframes blink { 0%, 55% { opacity: 1 } 56%, 100% { opacity: 0 } }
-  .becomes { color: var(--faint); font-size: .62em; font-weight: 700; }
-  .committed { color: var(--ink); letter-spacing: .04em; }
-
-  .specimen__caption {
-    font-size: .95rem;
-    color: var(--muted);
-    max-width: 40em;
-    line-height: 1.85;
-  }
-
   /* ── claims ────────────────────────────────────────────────────── */
   .band { padding-block: clamp(4.5rem, 11vw, 8rem); border-top: 1px solid var(--rule); }
   .band--sunk { background: var(--sunk); }
@@ -539,45 +491,11 @@
             <tr><td>打字</td><td>不會跳出來猜你要打什麼。<strong>這個編輯器沒有自動完成</strong></td></tr>
             <tr><td>寫正文</td><td>不會讓任何一行 YAML 出現在你眼前。metadata 建立時填完就消失</td></tr>
             <tr><td>叫出片段又不想用了</td><td>不會留下任何要你回頭清掉的字</td></tr>
-            <tr><td>寫到一半停下來想事情</td><td>不會因為 debounce 到了就在組字中途存檔</td></tr>
+            <tr><td>盯著候選字想用哪一個</td><td>不會在你還沒選完字的時候就自己存檔</td></tr>
             <tr><td>想找靈感</td><td>不會給你一張關係圖，讓你逛一小時當作有在寫</td></tr>
           </tbody>
         </table>
       </div>
-    </div>
-  </section>
-
-  <!-- ── the hardest interruption ─────────────────────────────────── -->
-  <section class="band band--sunk">
-    <div class="wrap narrow">
-      <h2>最難的一次打斷，發生在選字的時候</h2>
-      <p style="margin-top:1.2rem;color:var(--ink-soft);line-height:1.9">
-        上面那些是設計上的克制。但對寫中文的人來說，最暴力的打斷不是介面，
-        是<strong>輸入法自己壞掉</strong>。
-      </p>
-
-      <div class="specimen">
-        <div class="specimen__line">
-          <span class="composing">ㄊㄞˊ ㄨㄢ<i class="caret"></i></span>
-          <span class="becomes">選字之後</span>
-          <span class="committed">台灣</span>
-        </div>
-        <p class="specimen__caption">
-          左邊那個狀態叫<strong>「組字中」</strong>——不是「還沒輸入」，也不是「已經輸入」，
-          是打中文才有的<em>第三種狀態</em>。編輯器若在這幾百毫秒裡去動文件內容，
-          輸入法的狀態機就會被打斷：候選視窗跑到畫面角落、吃字、字序錯亂、按一次 undo 整段消失。
-        </p>
-      </div>
-
-      <p style="margin-top:1.8rem;color:var(--ink-soft);line-height:1.9">
-        這件事在 ZenMD 的規格裡佔了一整節，還有一份十二項的人工回歸清單——
-        <strong>每次升級底層引擎都要重跑一遍</strong>。
-        為了它，整個桌面框架的選型被翻過一次案：用大一百倍的安裝包，換三個平台同一套輸入法行為。
-      </p>
-      <p style="margin-top:1rem;color:var(--muted);font-size:.94rem;line-height:1.85">
-        會為了一個「不出錯」花這種力氣，是因為它其實不是相容性議題——
-        <strong>它是「不打斷你」這個承諾裡最難的那一關。</strong>
-      </p>
     </div>
   </section>
 
@@ -603,7 +521,7 @@
       <div class="shot">
         <div class="shot__head">
           <h3>打一個 <code>/</code>，常用的形狀就落下來</h3>
-          <p>標題、連結、圖片、表格、任務項。游標停在第一個要填的地方。<strong>組字中打 <code>/</code> 什麼都不會發生</strong>——那時候的按鍵屬於輸入法。</p>
+          <p>標題、連結、圖片、表格、任務項。游標停在第一個要填的地方，直接打字就是了。<strong>正在用輸入法選字的時候打 <code>/</code>，什麼都不會發生</strong>——那一下按鍵屬於輸入法。</p>
         </div>
         <figure>
           <img src="screenshots/02-snippet-menu.png"
