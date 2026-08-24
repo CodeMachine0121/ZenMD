@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ZenMD — 寫中文的人用的寫作工具</title>
-<meta name="description" content="本機桌面版中文寫作工具。把零碎的知識點，一路帶到寫得完整、可以拿出去的成品。中文輸入永遠不出錯。">
+<title>ZenMD — 不打斷你的中文寫作環境</title>
+<meta name="description" content="本機桌面版中文寫作環境。它做的每一個決定都在回答同一個問題：這會不會打斷正在寫的人。">
 
-<meta property="og:title" content="ZenMD — 寫中文的人用的寫作工具">
-<meta property="og:description" content="把零碎的知識點，一路帶到可以拿出去的成品。中文輸入永遠不出錯。">
+<meta property="og:title" content="ZenMD — 不打斷你的中文寫作環境">
+<meta property="og:description" content="寫的時候，沒有任何東西打斷你。">
 <meta property="og:type" content="website">
-<meta property="og:image" content="screenshots/01-editor-and-preview.png">
+<meta property="og:image" content="screenshots/04-zen-mode.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -168,15 +168,15 @@
   h1 .thin { color: var(--muted); font-weight: 700; }
 
   .lede {
-    margin-top: 1.6rem;
+    margin-top: 1.8rem;
     font-size: clamp(1.02rem, 2.1vw, 1.16rem);
     color: var(--ink-soft);
     max-width: 34em;
   }
 
-  /* the specimen: the product's whole thesis, set in type */
+  /* the specimen, now evidence rather than headline */
   .specimen {
-    margin-top: clamp(2.5rem, 6vw, 4rem);
+    margin-top: clamp(2rem, 4vw, 2.8rem);
     border: 1px solid var(--rule);
     border-radius: 6px;
     background: var(--raised);
@@ -436,9 +436,33 @@
     gap: .5rem;
   }
 
+  /* the hero picture: no heavy frame, plenty of air around it */
+  .stage { margin-top: clamp(3rem, 7vw, 5rem); }
+  .stage img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 2px rgba(22,24,27,.04), 0 24px 60px -32px rgba(22,24,27,.28);
+  }
+  .stage figcaption {
+    margin-top: 1.1rem;
+    font-size: .9rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 40em;
+  }
+  .stage figure { margin: 0; }
+
+  /* what it refuses to do */
+  .refusals { margin-top: clamp(2rem, 4vw, 3rem); }
+  .refusals td:first-child { width: 42%; color: var(--muted); }
+  .refusals td:last-child  { color: var(--ink); font-weight: 500; }
+  .refusals thead th:last-child { color: var(--seal); }
+
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
-</head>
 <body>
 
 <header class="top">
@@ -453,79 +477,107 @@
   <!-- ── hero ─────────────────────────────────────────────────────── -->
   <section class="wrap hero">
     <p class="eyebrow">macOS · 本機 · 離線可用</p>
-    <h1>寫中文的人，<br>值得一個不會吃字的編輯器</h1>
+    <h1>寫的時候，<br>沒有任何東西打斷你</h1>
     <p class="lede">
-      ZenMD 是一個本機桌面版中文寫作工具——把零碎的知識點，一路帶到寫得完整、可以拿出去的成品。
+      ZenMD 是一個本機桌面版中文寫作環境。它做的每一個決定，都在回答同一個問題——
+      <strong>這會不會打斷正在寫的人。</strong>
     </p>
 
-    <div class="specimen">
-      <div class="specimen__line">
-        <span class="composing">ㄊㄞˊ ㄨㄢ<i class="caret"></i></span>
-        <span class="becomes">選字之後</span>
-        <span class="committed">台灣</span>
+    <div class="stage">
+      <figure>
+        <img src="screenshots/04-zen-mode.png"
+             alt="ZenMD 的 zen mode：側欄、文章清單與預覽全部退場，畫面上只剩正在編輯的那一篇文章">
+        <figcaption>
+          這是 zen mode。側欄、清單、預覽全部退場，畫面上只剩你正在寫的那一篇——
+          以及一顆讓它們回來的按鈕。
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── refusals ─────────────────────────────────────────────────── -->
+  <section class="band">
+    <div class="wrap">
+      <h2 class="narrow">專注不是把介面變乾淨，是把「打斷」拿掉</h2>
+      <p style="margin-top:1.2rem;color:var(--ink-soft);max-width:44em;line-height:1.9">
+        「無干擾寫作」這句話每個編輯器都在講，講的通常是介面很簡潔。
+        ZenMD 在意的是另一件事：<strong>在你打字的那幾秒鐘裡，有什麼東西可能插話。</strong>
+        所以它的規格裡有一長串「刻意不做」——每一條都是某個編輯器習慣做、而寫作的人其實沒要求過的事。
+      </p>
+
+      <div class="scroller refusals">
+        <table>
+          <thead><tr><th>你正在做的事</th><th>它不會做的事</th></tr></thead>
+          <tbody>
+            <tr><td>按 Tab 想縮排一行</td><td>不會把游標踢去別的按鈕。<strong>Tab 只做縮排</strong></td></tr>
+            <tr><td>打字</td><td>不會跳出來猜你要打什麼。<strong>這個編輯器沒有自動完成</strong></td></tr>
+            <tr><td>寫正文</td><td>不會讓任何一行 YAML 出現在你眼前。metadata 建立時填完就消失</td></tr>
+            <tr><td>叫出片段又不想用了</td><td>不會留下任何要你回頭清掉的字</td></tr>
+            <tr><td>寫到一半停下來想事情</td><td>不會因為 debounce 到了就在組字中途存檔</td></tr>
+            <tr><td>想找靈感</td><td>不會給你一張關係圖，讓你逛一小時當作有在寫</td></tr>
+          </tbody>
+        </table>
       </div>
-      <p class="specimen__caption">
-        左邊那個狀態叫<strong>「組字中」</strong>。它不是「還沒輸入」，也不是「已經輸入」——是中文才有的<em>第三種狀態</em>。
-        編輯器若在這段期間去動文件內容，輸入法的狀態機就會被打斷：候選視窗跑掉、吃字、字序錯亂、按一次 undo 整段消失。
-        <strong>ZenMD 把這件事寫成規格的第 6 節，不是相容性議題。</strong>
+    </div>
+  </section>
+
+  <!-- ── the hardest interruption ─────────────────────────────────── -->
+  <section class="band band--sunk">
+    <div class="wrap narrow">
+      <h2>最難的一次打斷，發生在選字的時候</h2>
+      <p style="margin-top:1.2rem;color:var(--ink-soft);line-height:1.9">
+        上面那些是設計上的克制。但對寫中文的人來說，最暴力的打斷不是介面，
+        是<strong>輸入法自己壞掉</strong>。
+      </p>
+
+      <div class="specimen">
+        <div class="specimen__line">
+          <span class="composing">ㄊㄞˊ ㄨㄢ<i class="caret"></i></span>
+          <span class="becomes">選字之後</span>
+          <span class="committed">台灣</span>
+        </div>
+        <p class="specimen__caption">
+          左邊那個狀態叫<strong>「組字中」</strong>——不是「還沒輸入」，也不是「已經輸入」，
+          是打中文才有的<em>第三種狀態</em>。編輯器若在這幾百毫秒裡去動文件內容，
+          輸入法的狀態機就會被打斷：候選視窗跑到畫面角落、吃字、字序錯亂、按一次 undo 整段消失。
+        </p>
+      </div>
+
+      <p style="margin-top:1.8rem;color:var(--ink-soft);line-height:1.9">
+        這件事在 ZenMD 的規格裡佔了一整節，還有一份十二項的人工回歸清單——
+        <strong>每次升級底層引擎都要重跑一遍</strong>。
+        為了它，整個桌面框架的選型被翻過一次案：用大一百倍的安裝包，換三個平台同一套輸入法行為。
+      </p>
+      <p style="margin-top:1rem;color:var(--muted);font-size:.94rem;line-height:1.85">
+        會為了一個「不出錯」花這種力氣，是因為它其實不是相容性議題——
+        <strong>它是「不打斷你」這個承諾裡最難的那一關。</strong>
       </p>
     </div>
   </section>
 
-  <!-- ── claims ───────────────────────────────────────────────────── -->
+  <!-- ── shots ────────────────────────────────────────────────────── -->
   <section class="band">
     <div class="wrap">
-      <h2 class="narrow">三件它跟別人不一樣的事</h2>
-
-      <div class="claims">
-        <div class="claim">
-          <h3>筆記與文章的分界是假的</h3>
-          <p>
-            同一段知識，今天是隨手記下的一行，三個月後長成一篇文章。
-            中間沒有任何一個時刻可以說「它從筆記變成文章了」。
-            ZenMD 守的是<strong>中間那段路</strong>，不是兩個類別的其中一邊。
-          </p>
-        </div>
-        <div class="claim">
-          <h3>眼前只有正文</h3>
-          <p>
-            標題、標籤、狀態這些 metadata，在建立的時候用表單填完，
-            之後寫作時<strong>一個 YAML 符號都看不到</strong>。
-            它們還是好好地寫在檔頭，只是不擋你的路。
-          </p>
-        </div>
-        <div class="claim">
-          <h3>檔案永遠是你的</h3>
-          <p>
-            一則知識點就是一個 <code>.md</code> 檔，圖片存在旁邊的 <code>images/</code>，
-            正文裡永遠是相對路徑。
-            <strong>整包搬去 Obsidian、丟上 Git、餵給 Hugo 都還是同一份東西。</strong>
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── shots ────────────────────────────────────────────────────── -->
-  <section class="band band--sunk">
-    <div class="wrap">
-      <h2 class="narrow">它長什麼樣子</h2>
+      <h2 class="narrow">需要的時候，東西都在</h2>
+      <p style="margin-top:1.2rem;color:var(--ink-soft);max-width:44em;line-height:1.9">
+        克制不等於陽春。zen mode 是一個開關，不是唯一的樣子。
+      </p>
 
       <div class="shot">
         <div class="shot__head">
           <h3>左邊是你的東西，中間在寫，右邊是成品</h3>
-          <p>Markdown 原始碼配即時預覽。預覽收起來的時候，編輯區吃掉整個寬度。</p>
+          <p>Markdown 原始碼配即時預覽。三種排法一鍵切換，收合狀態記得住。</p>
         </div>
         <figure>
           <img src="screenshots/01-editor-and-preview.png"
-               alt="ZenMD 主畫面：左側是 workspace、狀態與標籤，中間是文章清單，右邊是編輯區與即時預覽並排" loading="lazy">
+               alt="ZenMD 完整畫面：左側是 workspace、狀態與標籤，中間是文章清單，右邊是編輯區與即時預覽並排" loading="lazy">
         </figure>
       </div>
 
       <div class="shot">
         <div class="shot__head">
           <h3>打一個 <code>/</code>，常用的形狀就落下來</h3>
-          <p>標題、連結、圖片、表格、任務項。游標停在第一個要填的地方，直接打字就是了。<strong>組字中打 <code>/</code> 什麼都不會發生</strong>——那時候的按鍵屬於輸入法。</p>
+          <p>標題、連結、圖片、表格、任務項。游標停在第一個要填的地方。<strong>組字中打 <code>/</code> 什麼都不會發生</strong>——那時候的按鍵屬於輸入法。</p>
         </div>
         <figure>
           <img src="screenshots/02-snippet-menu.png"
@@ -547,7 +599,7 @@
   </section>
 
   <!-- ── honesty ──────────────────────────────────────────────────── -->
-  <section class="band">
+  <section class="band band--sunk">
     <div class="wrap narrow">
       <h2>先講清楚它現在還不能做什麼</h2>
       <p style="margin-top:1rem;color:var(--muted);font-size:.97rem">
@@ -559,14 +611,14 @@
         <div class="limit"><span class="mark">02</span><p><strong>第一次開啟要手動放行。</strong>還沒有 Apple 開發者憑證，所以要去「系統設定 → 隱私權與安全性」按一下允許。</p></div>
         <div class="limit"><span class="mark">03</span><p><strong>同步與發佈還沒做好，手機版也還沒有。</strong>那是接下來要做的、也是唯一要收訂閱的部分。在它上線之前，要跨裝置請自己把資料夾放進 iCloud 或 Git——因為它就只是一堆 <code>.md</code> 檔。</p></div>
         <div class="limit"><span class="mark">04</span><p><strong>沒有全文搜尋。</strong>目前只能用標題、標籤、狀態篩選。這是排最前面要補的。</p></div>
-        <div class="limit"><span class="mark">05</span><p><strong>不做雙向連結、graph view。</strong>那是知識庫的做法，ZenMD 在意的是把一則知識點寫完、寫到能拿出去。</p></div>
+        <div class="limit"><span class="mark">05</span><p><strong>沒有雙向連結、graph view、外掛。</strong>這一條短期內不會變——那是上面那張表的最後一列，不是還沒做。</p></div>
         <div class="limit"><span class="mark">06</span><p><strong>一個人做的。</strong>不會有 24 小時客服，但你寄信我會回。</p></div>
       </div>
     </div>
   </section>
 
   <!-- ── signup ───────────────────────────────────────────────────── -->
-  <section class="band band--sunk" id="signup">
+  <section class="band" id="signup">
     <div class="wrap narrow">
       <h2>App 是免費的。雲端功能才收訂閱。</h2>
       <p style="margin-top:1rem;color:var(--muted);font-size:.97rem;line-height:1.85">
@@ -652,7 +704,7 @@
 </main>
 
 <footer class="wrap">
-  <div>ZenMD · 一個本機桌面版中文寫作工具</div>
+  <div>ZenMD · 一個不打斷你的中文寫作環境</div>
   <div>畫面截自實際執行的應用程式，內容為示範用資料。</div>
 </footer>
 

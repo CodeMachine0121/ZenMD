@@ -11,7 +11,8 @@ const { chromium } = requireGlobal('playwright');
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
 await page.goto(pathToFileURL(path.resolve(here, '../index.html')).toString());
-await page.waitForTimeout(2500);
+await page.evaluate(() => document.fonts.ready); // else the shot catches the font swap
+await page.waitForTimeout(800);
 await page.screenshot({ path: path.join(here, 'landing-preview-top.png') });
 await page.screenshot({ path: path.join(here, 'landing-preview-full.png'), fullPage: true });
 await browser.close();

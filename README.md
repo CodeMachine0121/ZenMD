@@ -16,9 +16,10 @@ ZenMD 的 landing page，以及產生它那三張截圖的工具。
 ```
 index.html                        landing page 本體（單檔，無建置步驟）
 screenshots/                      截自實際執行的 App
-  01-editor-and-preview.png
-  02-snippet-menu.png
-  03-zen-theme.png
+  01-editor-and-preview.png       四欄完整畫面
+  02-snippet-menu.png             片段選單
+  03-zen-theme.png                禪主題
+  04-zen-mode.png                 zen mode —— hero 用的那張
 tools/
   captureScreenshots.mjs          用 Playwright 驅動 Electron 取截圖
   previewLanding.mjs              用 Chromium 把 index.html 渲染出來看
@@ -110,4 +111,8 @@ node tools/previewLanding.mjs    # 或渲染成 PNG 檢查（含 full page）
 - 紙白底 `#FBFAF8` + 墨黑 `#16181B`，唯一重點色是硃砂紅 `#BF3B2E`（印章與圈重點的那個紅）。
 - 標題 `Noto Serif TC`、內文 `Noto Sans TC`、小標籤 `DM Mono`。
 - **深淺色主題都畫過**：色彩全部走 CSS 變數，深色在 `prefers-color-scheme` 與 `[data-theme]` 各定義一次。
-- Hero 刻意**不放截圖**，放「組字中」的字體標本——先讓人認出自己每天在受的折磨，再給看畫面。
+- **Hero 放的是 zen mode 的截圖**，標題是產品的主張（「寫的時候，沒有任何東西打斷你」），
+  版面刻意留白——頁面本身就在示範那個主張。
+- 「組字中」的字體標本**不是** hero，它在第三節，角色是**證據**：
+  先講「刻意不做的事」（設計上的克制），再講輸入法（最難的那一關）。
+  這個順序是刻意的——單講 zen 跟十幾個競品沒有差別，配上組字那一段才變成主張。

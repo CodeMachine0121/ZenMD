@@ -146,5 +146,31 @@ try {
   console.log('  (settings:', failure.message, ')');
 }
 
+// ── 4. zen mode: the editor alone, which is the whole pitch ────────────────
+// A narrower window on purpose. Full width gives lines nobody would choose to
+// read, and this shot has to look like writing rather than like a wide screen.
+try {
+  await application.evaluate(async ({ BrowserWindow }) => {
+    const [first] = BrowserWindow.getAllWindows();
+    first.setBounds({ x: 0, y: 0, width: 1180, height: 860 });
+  });
+  await window.waitForTimeout(500);
+
+  // prose, not the article full of tables and code
+  await window.locator('.zenmd-workspace-list button.zenmd-row')
+    .filter({ hasText: '寫作' }).first().click();
+  await window.waitForTimeout(700);
+  await window.locator('button.zenmd-row').filter({ hasText: '為什麼我不再用資料夾' }).first().click();
+  await window.waitForTimeout(1000);
+
+  await window.locator('.zenmd-panel-chrome__arrangements button').first().click(); // editor only
+  await window.waitForTimeout(500);
+  await window.locator('.zenmd-panel-chrome__control[aria-pressed]').first().click(); // zen mode
+  await window.waitForTimeout(1000);
+  await shoot('04-zen-mode');
+} catch (failure) {
+  console.log('  (zen mode:', failure.message, ')');
+}
+
 await application.close();
 console.log('done →', shots);
