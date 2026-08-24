@@ -405,6 +405,22 @@
   }
   .also input { margin: .45rem 0 0; accent-color: var(--seal); flex: none; }
 
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .formstate {
+    font-size: .92rem;
+    line-height: 1.75;
+    color: var(--muted);
+    border-left: 2px solid var(--rule);
+    padding-left: .85rem;
+  }
+  .formstate--done { color: var(--ink); border-left-color: var(--seal); font-weight: 500; }
+  button[disabled] { opacity: .5; cursor: default; }
+  button[disabled]:hover { background: var(--ink); }
+  #bd-sink { position: absolute; width: 0; height: 0; border: 0; visibility: hidden; }
+
   /* ── footer ────────────────────────────────────────────────────── */
   footer {
     border-top: 1px solid var(--rule);
@@ -583,20 +599,35 @@
 
       <div class="signup">
         <!--
-          把 action 換成你的表單服務（Formspree / Buttondown / ConvertKit 都行）。
-          沒換之前這個表單不會送到任何地方。
+          Buttondown 的內嵌表單。
 
-          價格若改動：免費那欄的 NT$0、訂閱那欄的 NT$149 與 NT$1,490，共三處。
+          1. 把 REPLACE_WITH_YOUR_BUTTONDOWN_USERNAME 換成你的帳號名稱。
+             最保險的做法是去 Buttondown 後台複製它給的內嵌表單網址，
+             整段 action 貼過來——不要相信這裡拼出來的網址。
+
+          2. 那個勾選框送的是 metadata__wants_cloud。**先自己送一筆測試**，
+             到後台確認這個欄位真的出現在訂閱者身上；沒出現的話改用 tag。
+
+          3. 沒勾的時候瀏覽器不會送出這個欄位，所以後台看到的是「有這個欄位的人」，
+             不是「yes / no 兩種值」。算勾選率就是算有這個欄位的人數。
+
+          價格若改動：上面 tiers 裡的 NT$0、NT$149、NT$1,490 共三處。
         -->
-        <form action="REPLACE_WITH_YOUR_FORM_ENDPOINT" method="POST">
+        <form id="waitlist"
+              action="https://buttondown.com/api/emails/embed-subscribe/REPLACE_WITH_YOUR_BUTTONDOWN_USERNAME"
+              method="post"
+              target="bd-sink">
+          <input type="hidden" name="embed" value="1">
+          <input type="hidden" name="tag" value="landing">
+
           <div class="field">
-            <label for="email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">你的 email</label>
+            <label class="sr-only" for="email">你的 email</label>
             <input id="email" type="email" name="email" required placeholder="你的 email" autocomplete="email">
             <button type="submit">可以下載時通知我</button>
           </div>
 
           <label class="also">
-            <input type="checkbox" name="wants_cloud" value="yes">
+            <input type="checkbox" name="metadata__wants_cloud" value="yes">
             <span>同步與發佈上線的時候也通知我——我有興趣付費使用。</span>
           </label>
 
@@ -604,7 +635,12 @@
             只會寄「可以下載了」跟「雲端功能上線了」這兩封。
             <strong>沒有電子報、不轉給任何人、隨時回信說不要就移除。</strong>
           </p>
+
+          <p class="formstate" id="formstate" role="status" aria-live="polite" hidden></p>
         </form>
+
+        <!-- 表單送進這個看不見的 frame，人就留在這一頁上 -->
+        <iframe name="bd-sink" id="bd-sink" title="訂閱結果" tabindex="-1" aria-hidden="true"></iframe>
       </div>
     </div>
   </section>
@@ -615,6 +651,40 @@
   <div>ZenMD · 一個本機桌面版中文寫作工具</div>
   <div>畫面截自實際執行的應用程式，內容為示範用資料。</div>
 </footer>
+
+<script>
+  /*
+   * The form posts into a hidden frame instead of navigating away, so the
+   * reader stays on the page. We cannot read that frame (different origin),
+   * so a load after a submit is all the confirmation available -- which is
+   * why the wording says "收到了" rather than claiming it succeeded.
+   * With scripting off the form still posts; it just lands on Buttondown's
+   * own confirmation page.
+   */
+  (function () {
+    var form = document.getElementById('waitlist');
+    var sink = document.getElementById('bd-sink');
+    var state = document.getElementById('formstate');
+    if (!form || !sink || !state) return;
+
+    var submitted = false;
+    var button = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function () {
+      submitted = true;
+      state.hidden = false;
+      state.className = 'formstate';
+      state.textContent = '送出中…';
+    });
+
+    sink.addEventListener('load', function () {
+      if (!submitted) return; // the frame also loads once with the page itself
+      state.className = 'formstate formstate--done';
+      state.textContent = '收到了。可以下載的時候我會寄一封信給你。';
+      if (button) button.disabled = true;
+    });
+  })();
+</script>
 
 </body>
 </html>
