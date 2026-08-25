@@ -1,220 +1,186 @@
 /**
  * Drives the built ZenMD app with Playwright and captures the landing-page
- * screenshots.
+ * screenshots, once per language.
  *
- * The app hard-codes its vault to `~/ZenMD`, so this launches Electron with
- * HOME pointed at `tools/demo-home` — the real vault is never opened and never
- * appears in a screenshot.
+ *   node tools/captureScreenshots.mjs            # both languages
+ *   node tools/captureScreenshots.mjs --lang en  # just one
  *
- *   NODE_PATH=$(npm root -g) node tools/captureScreenshots.mjs [--inspect]
+ * The app hard-codes its vault to `~/ZenMD`, so each run launches Electron with
+ * HOME pointed at a directory of its own — the real vault is never opened and
+ * cannot appear in a picture. That directory is rebuilt from the seed every
+ * time, because capturing types into an article and autosave would keep it.
+ *
+ * Needs the app built first: cd ../ZenMD && npm run build.
+ * Pictures land in screenshots/{zh,en}/.
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
-import { mkdirSync, writeFileSync, rmSync, cpSync } from 'node:fs';
+import { mkdirSync, rmSync, cpSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 
 const require = createRequire(import.meta.url);
-
-// playwright is installed globally, and ESM ignores NODE_PATH — resolve it
-// through a require rooted at the global module directory instead.
 const globalModules = (process.env.NODE_PATH || execSync('npm root -g').toString()).trim();
 const requireGlobal = createRequire(path.join(globalModules, 'index.js'));
 const { _electron: electron } = requireGlobal('playwright');
-const here = path.dirname(fileURLToPath(import.meta.url));
 
+const here = path.dirname(fileURLToPath(import.meta.url));
 const landingDirectory = path.resolve(here, '..');
 const applicationDirectory = path.resolve(landingDirectory, '../ZenMD');
-const demoHome = path.join(here, 'demo-home');
-const shots = path.join(landingDirectory, 'screenshots');
-
-const inspecting = process.argv.includes('--inspect');
-const width = 1440;
-const height = 900;
-
-mkdirSync(shots, { recursive: true });
-
-// Every run starts from the pristine seed: the capture types into an article
-// and autosave would otherwise leave that in the demo vault for ever.
-rmSync(path.join(demoHome, 'ZenMD'), { recursive: true, force: true });
-cpSync(path.join(here, 'demo-vault'), path.join(demoHome, 'ZenMD'), { recursive: true });
-
 const electronBinary = require(path.join(applicationDirectory, 'node_modules/electron'));
 
-const environment = { ...process.env, HOME: demoHome };
-delete environment.ELECTRON_RENDERER_URL; // use the built renderer, not a dev server
+/**
+ * What each language calls the things the capture has to click. The pictures
+ * must make the same claims in both, so the shape of the run is identical and
+ * only the names differ.
+ */
+const languages = {
+  zh: {
+    seed: 'demo-vault',
+    proseWorkspace: '寫作',
+    proseArticle: '為什麼我不再用資料夾',
+    richWorkspace: '技術筆記',
+    richArticle: 'Electron 與 Tauri',
+  },
+  en: {
+    seed: 'demo-vault-en',
+    proseWorkspace: 'Writing',
+    proseArticle: 'Why I stopped filing',
+    richWorkspace: 'Tech notes',
+    richArticle: 'Electron and Tauri',
+  },
+};
 
-const application = await electron.launch({
-  executablePath: electronBinary,
-  args: [path.join(applicationDirectory, 'out/main/main.js')],
-  cwd: applicationDirectory,
-  env: environment,
-});
+const asked = process.argv.indexOf('--lang');
+const wanted = asked === -1 ? Object.keys(languages) : [process.argv[asked + 1]];
 
-const window = await application.firstWindow();
-await window.waitForLoadState('domcontentloaded');
+for (const code of wanted) {
+  const language = languages[code];
+  if (!language) {
+    console.error(`✕ 不認得的語言：${code}`);
+    process.exitCode = 1;
+    continue;
+  }
 
-await application.evaluate(async ({ BrowserWindow }) => {
-  const [first] = BrowserWindow.getAllWindows();
-  first.setBounds({ x: 0, y: 0, width: 1440, height: 900 });
-  first.show();
-  first.focus();
-});
+  console.log(`\n══ ${code} ══`);
+  const shots = path.join(landingDirectory, 'screenshots', code);
+  const home = path.join(here, `demo-home-${code}`);
+  mkdirSync(shots, { recursive: true });
+  rmSync(path.join(home, 'ZenMD'), { recursive: true, force: true });
+  cpSync(path.join(here, language.seed), path.join(home, 'ZenMD'), { recursive: true });
 
-await window.waitForTimeout(1500);
+  const environment = { ...process.env, HOME: home };
+  delete environment.ELECTRON_RENDERER_URL;
 
-async function shoot(name) {
-  await window.waitForTimeout(400);
-  await window.screenshot({ path: path.join(shots, `${name}.png`) });
-  console.log('  captured', `${name}.png`);
-}
-
-if (inspecting) {
-  // One pass that tells us what the DOM actually offers, so the selectors below
-  // can be written against reality instead of guesses.
-  const outline = await window.evaluate(() => {
-    const interesting = [...document.querySelectorAll('[class],[data-testid],button,[role]')]
-      .slice(0, 260)
-      .map((element) => {
-        const label = (element.textContent ?? '').trim().slice(0, 34).replace(/\s+/g, ' ');
-        return `${element.tagName.toLowerCase()}` +
-          `${element.className && typeof element.className === 'string' ? '.' + element.className.split(/\s+/).join('.') : ''}` +
-          `${element.getAttribute('role') ? `[role=${element.getAttribute('role')}]` : ''}` +
-          `${label ? `  « ${label} »` : ''}`;
-      });
-    return interesting.join('\n');
+  const application = await electron.launch({
+    executablePath: electronBinary,
+    args: [path.join(applicationDirectory, 'out/main/main.js')],
+    cwd: applicationDirectory,
+    env: environment,
   });
-  writeFileSync(path.join(here, 'dom-outline.txt'), outline, 'utf8');
-  console.log('  wrote dom-outline.txt');
-  await shoot('00-raw');
+
+  const window = await application.firstWindow();
+  await window.waitForLoadState('domcontentloaded');
+
+  const resize = async (width, height) => {
+    await application.evaluate(async ({ BrowserWindow }, size) => {
+      const [first] = BrowserWindow.getAllWindows();
+      first.setBounds({ x: 0, y: 0, width: size.w, height: size.h });
+      first.show();
+      first.focus();
+    }, { w: width, h: height });
+    await window.waitForTimeout(600);
+  };
+
+  const shoot = async (name) => {
+    await window.waitForTimeout(400);
+    await window.screenshot({ path: path.join(shots, `${name}.png`) });
+    console.log('  captured', `${name}.png`);
+  };
+
+  const open = async (workspace, article) => {
+    await window.locator('.zenmd-workspace-list button.zenmd-row')
+      .filter({ hasText: workspace }).first().click();
+    await window.waitForTimeout(700);
+    await window.locator('button.zenmd-row').filter({ hasText: article }).first().click();
+    await window.waitForTimeout(1000);
+  };
+
+  const viewMode = (index) => window.locator('.zenmd-panel-chrome__arrangements button').nth(index);
+  const zenToggle = () => window.locator('.zenmd-panel-chrome__control[aria-pressed]').first();
+
+  await resize(1440, 900);
+  await window.waitForTimeout(900);
+
+  await open(language.richWorkspace, language.richArticle);
+  await shoot('01-editor-and-preview');
+
+  try {
+    await window.locator('.cm-content').first().click();
+    await window.keyboard.press('ControlOrMeta+End');
+    await window.keyboard.press('Enter');
+    await window.keyboard.press('Enter');
+    await window.keyboard.type('/', { delay: 80 });
+    await window.waitForTimeout(900);
+    await shoot('02-snippet-menu');
+    await window.keyboard.press('Escape');
+    await window.keyboard.press('Backspace');
+  } catch (failure) {
+    console.log('  (snippet menu:', failure.message, ')');
+  }
+
+  try {
+    await window.locator('button.zenmd-settings__gear').first().click();
+    await window.waitForTimeout(700);
+    await window.locator('select').first().selectOption({ index: 4 });
+    await window.waitForTimeout(500);
+    await window.keyboard.press('Escape');
+    await window.waitForTimeout(800);
+    await shoot('03-zen-theme');
+  } catch (failure) {
+    console.log('  (theme:', failure.message, ')');
+  }
+
+  try {
+    await resize(1180, 860);
+    await open(language.proseWorkspace, language.proseArticle);
+    await viewMode(0).click();
+    await window.waitForTimeout(500);
+    await zenToggle().click();
+    await window.waitForTimeout(1000);
+    await shoot('04-zen-mode');
+  } catch (failure) {
+    console.log('  (zen mode:', failure.message, ')');
+  }
+
+  // The phone set. Not crops: a crop cuts a sentence at the right edge and
+  // reads as a broken picture. A narrower window lets the app wrap its own.
+  try {
+    await resize(880, 720);
+    await shoot('04-zen-mode--narrow');
+
+    await viewMode(1).click();
+    await window.waitForTimeout(800);
+    await shoot('01-editor-and-preview--narrow');
+
+    await viewMode(0).click();
+    await window.waitForTimeout(600);
+    await window.locator('.cm-content').first().click();
+    await window.keyboard.press('ControlOrMeta+End');
+    await window.keyboard.press('Enter');
+    await window.keyboard.type('/', { delay: 80 });
+    await window.waitForTimeout(800);
+    await shoot('02-snippet-menu--narrow');
+    await window.keyboard.press('Escape');
+    await window.keyboard.press('Backspace');
+
+    await zenToggle().click();
+    await window.waitForTimeout(900);
+    await shoot('03-zen-theme--narrow');
+  } catch (failure) {
+    console.log('  (narrow pass:', failure.message, ')');
+  }
+
   await application.close();
-  process.exit(0);
+  console.log(`  → ${shots}`);
 }
-
-console.log('capturing…');
-
-async function outlineTo(file) {
-  const outline = await window.evaluate(() => {
-    return [...document.querySelectorAll('[class]')].slice(0, 400).map((element) => {
-      const label = (element.textContent ?? '').trim().slice(0, 30).replace(/\s+/g, ' ');
-      const names = typeof element.className === 'string' ? element.className.split(/\s+/).join('.') : '';
-      return `${element.tagName.toLowerCase()}${names ? '.' + names : ''}${label ? `  « ${label} »` : ''}`;
-    }).join('\n');
-  });
-  writeFileSync(path.join(here, file), outline, 'utf8');
-  console.log('  wrote', file);
-}
-
-// ── 1. the product shot: an article open with the preview beside it ─────────
-await window.locator('.zenmd-workspace-list button.zenmd-row')
-  .filter({ hasText: '技術筆記' }).first().click();
-await window.waitForTimeout(800);
-await window.locator('button.zenmd-row').filter({ hasText: 'Electron 與 Tauri' }).first().click();
-await window.waitForTimeout(1400);
-await shoot('01-editor-and-preview');
-await outlineTo('dom-outline-open.txt');
-
-// ── 2. the slash menu ───────────────────────────────────────────────────────
-try {
-  const editor = window.locator('.cm-content').first();
-  await editor.click();
-  await window.keyboard.press('ControlOrMeta+End');
-  await window.waitForTimeout(200);
-  await window.keyboard.press('Enter');
-  await window.keyboard.press('Enter');
-  await window.keyboard.type('/', { delay: 80 });
-  await window.waitForTimeout(900);
-  await shoot('02-snippet-menu');
-} catch (failure) {
-  console.log('  (snippet menu:', failure.message, ')');
-}
-
-// ── 3. a second theme, so the page can show it is not one look ─────────────
-try {
-  await window.keyboard.press('Backspace');
-  await window.waitForTimeout(300);
-  await window.locator('button.zenmd-settings__gear').first().click();
-  await window.waitForTimeout(700);
-  const themeChooser = window.locator('select').first();
-  console.log('  themes:', await themeChooser.locator('option').allTextContents());
-  await themeChooser.selectOption({ index: 4 });
-  await window.waitForTimeout(500);
-  await window.keyboard.press('Escape');
-  await window.waitForTimeout(800);
-  await shoot('03-zen-theme');
-} catch (failure) {
-  console.log('  (settings:', failure.message, ')');
-}
-
-// ── 4. zen mode: the editor alone, which is the whole pitch ────────────────
-// A narrower window on purpose. Full width gives lines nobody would choose to
-// read, and this shot has to look like writing rather than like a wide screen.
-try {
-  await application.evaluate(async ({ BrowserWindow }) => {
-    const [first] = BrowserWindow.getAllWindows();
-    first.setBounds({ x: 0, y: 0, width: 1180, height: 860 });
-  });
-  await window.waitForTimeout(500);
-
-  // prose, not the article full of tables and code
-  await window.locator('.zenmd-workspace-list button.zenmd-row')
-    .filter({ hasText: '寫作' }).first().click();
-  await window.waitForTimeout(700);
-  await window.locator('button.zenmd-row').filter({ hasText: '為什麼我不再用資料夾' }).first().click();
-  await window.waitForTimeout(1000);
-
-  await window.locator('.zenmd-panel-chrome__arrangements button').first().click(); // editor only
-  await window.waitForTimeout(500);
-  await window.locator('.zenmd-panel-chrome__control[aria-pressed]').first().click(); // zen mode
-  await window.waitForTimeout(1000);
-  await shoot('04-zen-mode');
-} catch (failure) {
-  console.log('  (zen mode:', failure.message, ')');
-}
-
-// ── 5. the same claims again, for a phone ─────────────────────────────────
-// Not crops of the wide shots: a crop cuts a sentence in half at the right
-// edge, which reads as a broken picture. Narrowing the window instead lets the
-// app lay itself out, so every line ends where the app decided it should.
-async function resize(width, height) {
-  await application.evaluate(async ({ BrowserWindow }, size) => {
-    const [first] = BrowserWindow.getAllWindows();
-    first.setBounds({ x: 0, y: 0, width: size.w, height: size.h });
-  }, { w: width, h: height });
-  await window.waitForTimeout(600);
-}
-
-try {
-  await resize(880, 720);
-
-  // zen mode on prose — already there from step 4
-  await shoot('04-zen-mode--narrow');
-
-  // editor beside preview, with the two side columns still dismissed
-  await window.locator('.zenmd-panel-chrome__arrangements button').nth(1).click();
-  await window.waitForTimeout(800);
-  await shoot('01-editor-and-preview--narrow');
-
-  // the slash menu, back on the article that has room below it
-  await window.locator('.zenmd-panel-chrome__arrangements button').first().click();
-  await window.waitForTimeout(600);
-  const editor = window.locator('.cm-content').first();
-  await editor.click();
-  await window.keyboard.press('ControlOrMeta+End');
-  await window.keyboard.press('Enter');
-  await window.keyboard.type('/', { delay: 80 });
-  await window.waitForTimeout(800);
-  await shoot('02-snippet-menu--narrow');
-  await window.keyboard.press('Escape');
-  await window.keyboard.press('Backspace');
-
-  // the warm theme with the columns back, so it reads as a different skin
-  await window.locator('.zenmd-panel-chrome__control[aria-pressed]').first().click();
-  await window.waitForTimeout(900);
-  await shoot('03-zen-theme--narrow');
-} catch (failure) {
-  console.log('  (narrow pass:', failure.message, ')');
-}
-
-await application.close();
-console.log('done →', shots);

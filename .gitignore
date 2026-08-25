@@ -1,4 +1,4 @@
 .DS_Store
-tools/demo-home/
+tools/demo-home-*/
 tools/landing-preview-*.png
 tools/dom-outline*.txt

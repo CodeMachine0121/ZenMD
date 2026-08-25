@@ -30,8 +30,8 @@ const styles = read('styles.css');
 const script = read('page.js');
 
 const languages = [
-  { code: 'zh', out: 'index.html',    dir: '',    assets: '',    ogLocale: 'zh_TW' },
-  { code: 'en', out: 'en/index.html', dir: 'en',  assets: '../', ogLocale: 'en_US' },
+  { code: 'zh', out: 'index.html',    dir: '',   assets: '',    ogLocale: 'zh_TW' },
+  { code: 'en', out: 'en/index.html', dir: 'en', assets: '../', ogLocale: 'en_US' },
 ];
 
 const urlFor = (dir) => (dir ? `${SITE}/${dir}/` : `${SITE}/`);
@@ -59,7 +59,9 @@ for (const language of languages) {
     // Card images have to be absolute. A relative og:image is resolved by
     // some crawlers and dropped by others, and the ones that drop it are
     // the ones the link is being posted to.
-    ogImage: `${SITE}/screenshots/04-zen-mode.png`,
+    ogImage: `${SITE}/screenshots/${language.code}/04-zen-mode.png`,
+    // depth out of the page's own folder, plus the language's own set
+    shots: `${language.assets}screenshots/${language.code}/`,
     hrefZh: urlFor(''),
     hrefEn: urlFor('en'),
     // a link to the same page in the other language, relative so it works

@@ -4,7 +4,7 @@
     "width": 2
   },
   "previewPanel": {
-    "visible": true,
+    "visible": false,
     "widthRatio": 0.5,
     "toggleShortcut": null
   },
@@ -16,9 +16,9 @@
     "collapsedSections": []
   },
   "lastOpened": {
-    "workspaceName": "\u6280\u8853\u7b46\u8a18",
-    "articleFileName": "electron-\u8207-tauri-\u7684\u53d6\u6368.md"
+    "workspaceName": "寫作",
+    "articleFileName": "為什麼我不再用資料夾分類筆記.md"
   },
-  "interfaceLanguage": "zhHant",
-  "theme": "followSystem"
+  "interfaceLanguage": null,
+  "theme": "zen"
 }

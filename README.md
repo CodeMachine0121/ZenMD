@@ -49,17 +49,19 @@ tools/buildPages.mjs              產生兩個 HTML
 
 index.html                        ← 產生的，不要直接改
 en/index.html                     ← 產生的，不要直接改
-screenshots/                      截自實際執行的 App
-  01-editor-and-preview.png       四欄完整畫面
+screenshots/zh/                   中文頁用的截圖（App 介面也是中文）
+screenshots/en/                   英文頁用的截圖（App 介面也是英文）
+  01-editor-and-preview.png       編輯區與預覽並排
   02-snippet-menu.png             片段選單
   03-zen-theme.png                禪主題
   04-zen-mode.png                 zen mode —— hero 用的那張
   *--narrow.png                   同樣四張，但用 880px 視窗截的（手機版）
 tools/
-  captureScreenshots.mjs          用 Playwright 驅動 Electron 取截圖
+  captureScreenshots.mjs          用 Playwright 驅動 Electron 取截圖（兩種語言）
   previewLanding.mjs              用 Chromium 把 index.html 渲染出來看
-  demo-vault/                     示範用的假 vault（版控這一份）
-  demo-home/                      每次跑截圖時從 demo-vault 複製產生（不必版控）
+  demo-vault/                     中文示範 vault（版控）
+  demo-vault-en/                  英文示範 vault（版控）
+  demo-home-{zh,en}/              每次跑截圖從 seed 複製產生（不必版控）
 ```
 
 ## 上線前一定要做的兩件事
@@ -144,9 +146,16 @@ Cloudflare Pages 的 Web Analytics 是免費的，也不放 cookie（所以不�
 ## 重新產生截圖
 
 ```bash
-node tools/captureScreenshots.mjs            # 產生三張
-node tools/captureScreenshots.mjs --inspect  # 只截一張並 dump DOM，用來寫選擇器
+node tools/captureScreenshots.mjs            # 兩種語言各八張
+node tools/captureScreenshots.mjs --lang en  # 只跑一種
 ```
+
+**兩種語言各有一套截圖，連 App 介面本身都是對應語言的。**
+不是同一張圖用兩次——英文頁的訪客看到的是 `All Notes`、`STATUS`、`Active`，
+不是「所有文章」、「狀態」、「進行中」。
+
+示範 vault 的 `.zenmd/settings.json` 裡把 `interfaceLanguage` 明確釘死
+（`zhHant` / `en`），所以**截圖結果不會受你主機的系統語言影響**。
 
 需要：
 
