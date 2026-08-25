@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="{{htmlLang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{metaTitle}}</title>
+<meta name="description" content="{{metaDescription}}">
+
+<link rel="canonical" href="{{canonical}}">
+<link rel="alternate" hreflang="zh-Hant" href="{{hrefZh}}">
+<link rel="alternate" hreflang="en" href="{{hrefEn}}">
+<link rel="alternate" hreflang="x-default" href="{{hrefZh}}">
+
+<meta property="og:title" content="{{ogTitle}}">
+<meta property="og:description" content="{{ogDescription}}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="{{ogLocale}}">
+<meta property="og:image" content="{{assets}}screenshots/04-zen-mode.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@700;900&display=swap">
+
+<style>
+{{styles}}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+  <div class="wrap top__row">
+    <div class="brand"><span class="seal">禪</span>ZenMD</div>
+    <nav class="top__links">
+      <a class="lang" href="{{switchHref}}" hreflang="{{switchLang}}">{{switchLabel}}</a>
+      <a class="jump" href="#signup">{{navCta}}</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── hero ─────────────────────────────────────────────────────── -->
+  <section class="wrap hero">
+    <p class="eyebrow">{{eyebrow}}</p>
+    <h1>{{h1}}</h1>
+    <p class="lede">{{lede}}</p>
+
+    <div class="stage">
+      <figure>
+        <picture>
+          <source media="(max-width: 720px)" srcset="{{assets}}screenshots/04-zen-mode--narrow.png">
+          <img src="{{assets}}screenshots/04-zen-mode.png" alt="{{heroAlt}}">
+        </picture>
+        <figcaption>{{heroCaption}}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── refusals ─────────────────────────────────────────────────── -->
+  <section class="band">
+    <div class="wrap">
+      <h2 class="narrow">{{refusalsH2}}</h2>
+      <p class="band__intro">{{refusalsIntro}}</p>
+
+      <div class="scroller refusals">
+        <table>
+          <thead><tr><th>{{refusalsTh1}}</th><th>{{refusalsTh2}}</th></tr></thead>
+          <tbody>
+            <tr><td>{{r1a}}</td><td>{{r1b}}</td></tr>
+            <tr><td>{{r2a}}</td><td>{{r2b}}</td></tr>
+            <tr><td>{{r3a}}</td><td>{{r3b}}</td></tr>
+            <tr><td>{{r4a}}</td><td>{{r4b}}</td></tr>
+            <tr><td>{{r5a}}</td><td>{{r5b}}</td></tr>
+            <tr><td>{{r6a}}</td><td>{{r6b}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── shots ────────────────────────────────────────────────────── -->
+  <section class="band">
+    <div class="wrap">
+      <h2 class="narrow">{{shotsH2}}</h2>
+      <p class="band__intro">{{shotsIntro}}</p>
+
+      <div class="shot">
+        <div class="shot__head">
+          <h3>{{shot1H}}</h3>
+          <p>{{shot1P}}</p>
+        </div>
+        <figure>
+          <picture>
+            <source media="(max-width: 720px)" srcset="{{assets}}screenshots/01-editor-and-preview--narrow.png">
+            <img src="{{assets}}screenshots/01-editor-and-preview.png" alt="{{shot1Alt}}" loading="lazy">
+          </picture>
+        </figure>
+      </div>
+
+      <div class="shot">
+        <div class="shot__head">
+          <h3>{{shot2H}}</h3>
+          <p>{{shot2P}}</p>
+        </div>
+        <figure>
+          <picture>
+            <source media="(max-width: 720px)" srcset="{{assets}}screenshots/02-snippet-menu--narrow.png">
+            <img src="{{assets}}screenshots/02-snippet-menu.png" alt="{{shot2Alt}}" loading="lazy">
+          </picture>
+        </figure>
+      </div>
+
+      <div class="shot">
+        <div class="shot__head">
+          <h3>{{shot3H}}</h3>
+          <p>{{shot3P}}</p>
+        </div>
+        <figure>
+          <picture>
+            <source media="(max-width: 720px)" srcset="{{assets}}screenshots/03-zen-theme--narrow.png">
+            <img src="{{assets}}screenshots/03-zen-theme.png" alt="{{shot3Alt}}" loading="lazy">
+          </picture>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── signup ───────────────────────────────────────────────────── -->
+  <section class="band" id="signup">
+    <div class="wrap narrow">
+      <h2>{{signupH2}}</h2>
+      <p class="signup__intro">{{signupIntro}}</p>
+
+      <div class="tiers">
+        <div class="tier">
+          <span class="tier__name">{{tierFreeName}}</span>
+          <div class="price"><b>{{tierFreePrice}}</b><span class="unit">{{tierFreeUnit}}</span></div>
+          <ul>
+            <li><span class="tick">✦</span>{{tierFree1}}</li>
+            <li><span class="tick">✦</span>{{tierFree2}}</li>
+            <li><span class="tick">✦</span>{{tierFree3}}</li>
+            <li><span class="tick">✦</span>{{tierFree4}}</li>
+          </ul>
+        </div>
+
+        <div class="tier tier--paid">
+          <span class="tier__name">{{tierPaidName}}</span>
+          <div class="price"><b>{{tierPaidPrice}}</b><span class="unit">{{tierPaidUnit}}</span></div>
+          <p class="tier__annual">{{tierPaidAnnual}}</p>
+          <ul>
+            <li><span class="tick">✦</span>{{tierPaid1}}</li>
+            <li><span class="tick">✦</span>{{tierPaid2}}</li>
+            <li><span class="tick">✦</span>{{tierPaid3}}</li>
+            <li><span class="tick">✦</span>{{tierPaid4}}</li>
+          </ul>
+          <p class="tier__quote">{{tierQuote}}</p>
+          <p class="tier__soon">{{tierSoon}}</p>
+        </div>
+      </div>
+
+      <div class="signup">
+        <!--
+          Buttondown 的內嵌表單。帳號名稱 coding_afternoon 取自後台給的內嵌表單；
+          它是公開識別碼，不是金鑰——後台那段程式碼裡本來就沒有金鑰。
+
+          tag、metadata__lang、metadata__wants_cloud、metadata__wants 是後台那段
+          沒有的，我們自己加的。送一筆測試確認它們真的到得了後台。
+
+          價格在 src/strings.*.json，不要在產生出來的 HTML 裡改。
+        -->
+        <form id="waitlist"
+              action="https://buttondown.com/api/emails/embed-subscribe/coding_afternoon"
+              method="post"
+              target="bd-sink">
+          <input type="hidden" name="embed" value="1">
+          <input type="hidden" name="tag" value="landing">
+          <input type="hidden" name="metadata__lang" value="{{htmlLang}}">
+
+          <div class="field">
+            <label class="sr-only" for="email">{{formEmailLabel}}</label>
+            <input id="email" type="email" name="email" required placeholder="{{formEmailPlaceholder}}" autocomplete="email">
+            <button type="submit">{{formSubmit}}</button>
+          </div>
+
+          <label class="also">
+            <input type="checkbox" name="metadata__wants_cloud" value="yes">
+            <span>{{formCheckbox}}</span>
+          </label>
+
+          <div class="ask">
+            <label for="wants">{{formWantsLabel}}<span>{{formWantsOptional}}</span></label>
+            <input id="wants" type="text" name="metadata__wants" maxlength="140" placeholder="{{formWantsPlaceholder}}">
+          </div>
+
+          <p class="promise">{{formPlatform}}</p>
+          <p class="promise">{{formPromise}}</p>
+
+          <p class="formstate" id="formstate" role="status" aria-live="polite" hidden></p>
+        </form>
+
+        <!-- 表單送進這個看不見的 frame，人就留在這一頁上 -->
+        <iframe name="bd-sink" id="bd-sink" title="{{formDone}}" tabindex="-1" aria-hidden="true"></iframe>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <div>{{footer1}}</div>
+  <div>{{footer2}}</div>
+</footer>
+
+<script>
+{{script}}
+</script>
+
+</body>
+</html>

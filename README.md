@@ -11,10 +11,37 @@ ZenMD 的 landing page，以及產生它那三張截圖的工具。
 | **勾選率 30% 以上** | 有人真的想付錢，雲端值得做 |
 | 一週 **20 封以下** | 市場給答案了，別再往 App 裡投時間 |
 
+## 兩種語言，一份模板
+
+`/` 是中文、`/en/` 是英文。**兩個都是實體檔案，不是 JS 切換。**
+
+> 理由是分享連結時，Hacker News / Reddit / Mastodon 的預覽卡片是**爬蟲抓的，而爬蟲不執行 JS**。
+> 用 `?lang=en` 的話，不管網址帶什麼，別人看到的預覽永遠是中文。
+
+**改文案改 `src/`，不要改產生出來的 HTML。**
+
+```bash
+node tools/buildPages.mjs      # 產生 index.html 與 en/index.html
+```
+
+建置會擋兩件事：模板裡有字串檔沒有的 key、兩份字串檔的 key 對不齊。
+後者特別重要——**少一個 key 就會有一段文字用錯語言，而那種錯誤自己不會叫**。
+
+產生出來的 HTML **有進版控**，所以 Cloudflare 不需要任何建置設定，直接當靜態檔案送。
+
 ## 檔案
 
 ```
-index.html                        landing page 本體（單檔，無建置步驟）
+src/                              ← 唯一該編輯的地方
+  page.html                       版型模板（{{key}} 佔位）
+  styles.css                      樣式，兩種語言共用
+  page.js                         表單的送出行為
+  strings.zh.json                 中文文案
+  strings.en.json                 英文文案
+tools/buildPages.mjs              產生兩個 HTML
+
+index.html                        ← 產生的，不要直接改
+en/index.html                     ← 產生的，不要直接改
 screenshots/                      截自實際執行的 App
   01-editor-and-preview.png       四欄完整畫面
   02-snippet-menu.png             片段選單
@@ -66,6 +93,9 @@ tools/
 
    > ⚠️ App 免費之後，留 email 的成本變低了，所以第一個數字會比標價時漂亮很多。
    > **判讀要看勾選率**，不要看總數就開心。
+
+   表單還帶一個 `metadata__lang`（`zh-Hant` / `en`），所以中英文的訂閱**分得開**。
+   海外通路的轉換率通常跟本地差很多，混在一起看會兩邊都判斷錯。
 
 ## 在確認信裡再問一次
 
