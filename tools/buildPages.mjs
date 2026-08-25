@@ -22,7 +22,7 @@ const root = path.resolve(here, '..');
 const src = path.join(root, 'src');
 
 /** Absolute URLs are required for canonical and hreflang to mean anything. */
-const SITE = process.env.SITE_URL ?? 'https://zenmd.pages.dev';
+const SITE = (process.env.SITE_URL ?? 'https://zenmd.coding-afternoon.com').replace(/\/$/, '');
 
 const read = (file) => readFileSync(path.join(src, file), 'utf8');
 const template = read('page.html');
@@ -56,6 +56,10 @@ for (const language of languages) {
     assets: language.assets,
     ogLocale: language.ogLocale,
     canonical: urlFor(language.dir),
+    // Card images have to be absolute. A relative og:image is resolved by
+    // some crawlers and dropped by others, and the ones that drop it are
+    // the ones the link is being posted to.
+    ogImage: `${SITE}/screenshots/04-zen-mode.png`,
     hrefZh: urlFor(''),
     hrefEn: urlFor('en'),
     // a link to the same page in the other language, relative so it works

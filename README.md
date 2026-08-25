@@ -24,6 +24,13 @@ ZenMD 的 landing page，以及產生它那三張截圖的工具。
 node tools/buildPages.mjs      # 產生 index.html 與 en/index.html
 ```
 
+網址寫在 `tools/buildPages.mjs` 的 `SITE`，目前是 `https://zenmd.coding-afternoon.com`。
+canonical、hreflang、`og:url` 與 `og:image` 都從它算出來。
+
+> **`og:image` 一定要絕對路徑。** 相對路徑有些爬蟲會解析、有些直接丟掉，
+> 而丟掉的那些正好就是你要貼的地方——結果是預覽卡沒有圖。
+> 這個 bug 在本機測不出來，因為它只在別人的伺服器來抓頁面時才發生。
+
 建置會擋兩件事：模板裡有字串檔沒有的 key、兩份字串檔的 key 對不齊。
 後者特別重要——**少一個 key 就會有一段文字用錯語言，而那種錯誤自己不會叫**。
 
