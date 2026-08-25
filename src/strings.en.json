@@ -69,5 +69,6 @@
   "formSending": "Sending…",
   "formDone": "Got it. I will write when you can download it.",
   "footer1": "ZenMD · a writing environment that never interrupts you",
-  "footer2": "Screenshots are of the running application. The writing in them was written for the demo."
+  "footer2": "Screenshots are of the running application. The writing in them was written for the demo.",
+  "formVerifyNote": "You will land on Buttondown's page — <strong>one click there and you are on the list</strong>."
 }

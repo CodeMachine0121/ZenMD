@@ -69,5 +69,6 @@
   "formSending": "送出中…",
   "formDone": "收到了。可以下載的時候我會寄一封信給你。",
   "footer1": "ZenMD · 一個不打斷你的寫作環境",
-  "footer2": "畫面截自實際執行的應用程式，內容為示範用資料。"
+  "footer2": "畫面截自實際執行的應用程式，內容為示範用資料。",
+  "formVerifyNote": "按下之後會跳到 Buttondown 的頁面，<strong>在那裡點一下確認就完成了</strong>。"
 }

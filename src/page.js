@@ -1,31 +1,19 @@
 /*
-   * The form posts into a hidden frame instead of navigating away, so the
-   * reader stays on the page. We cannot read that frame (different origin),
-   * so a load after a submit is all the confirmation available -- which is
-   * why the wording says "收到了" rather than claiming it succeeded.
-   * With scripting off the form still posts; it just lands on Buttondown's
-   * own confirmation page.
-   */
-  (function () {
-    var form = document.getElementById('waitlist');
-    var sink = document.getElementById('bd-sink');
-    var state = document.getElementById('formstate');
-    if (!form || !sink || !state) return;
+ * The form navigates to Buttondown, which answers with a verification page the
+ * reader has to click. That step cannot be hidden — posting into an invisible
+ * frame swallows it, and the page then claims a success that never happened.
+ * So all this does is stop a second submit while the first one is leaving.
+ */
+(function () {
+  var form = document.getElementById('waitlist');
+  var state = document.getElementById('formstate');
+  if (!form || !state) return;
 
-    var submitted = false;
+  form.addEventListener('submit', function () {
     var button = form.querySelector('button[type="submit"]');
-
-    form.addEventListener('submit', function () {
-      submitted = true;
-      state.hidden = false;
-      state.className = 'formstate';
-      state.textContent = '{{formSending}}';
-    });
-
-    sink.addEventListener('load', function () {
-      if (!submitted) return; // the frame also loads once with the page itself
-      state.className = 'formstate formstate--done';
-      state.textContent = '{{formDone}}';
-      if (button) button.disabled = true;
-    });
-  })();
+    if (button) button.disabled = true;
+    state.hidden = false;
+    state.className = 'formstate';
+    state.textContent = '{{formSending}}';
+  });
+})();

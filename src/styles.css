@@ -400,7 +400,6 @@
   .formstate--done { color: var(--ink); border-left-color: var(--seal); font-weight: 500; }
   button[disabled] { opacity: .5; cursor: default; }
   button[disabled]:hover { background: var(--ink); }
-  #bd-sink { position: absolute; width: 0; height: 0; border: 0; visibility: hidden; }
 
   /* ── footer ────────────────────────────────────────────────────── */
   footer {

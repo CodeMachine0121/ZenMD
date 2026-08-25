@@ -429,7 +429,6 @@
   .formstate--done { color: var(--ink); border-left-color: var(--seal); font-weight: 500; }
   button[disabled] { opacity: .5; cursor: default; }
   button[disabled]:hover { background: var(--ink); }
-  #bd-sink { position: absolute; width: 0; height: 0; border: 0; visibility: hidden; }
 
   /* ── footer ────────────────────────────────────────────────────── */
   footer {
@@ -689,12 +688,15 @@
           tag、metadata__lang、metadata__wants_cloud、metadata__wants 是後台那段
           沒有的，我們自己加的。送一筆測試確認它們真的到得了後台。
 
+          這個表單**必須**正常導過去，不能送進隱藏 iframe：Buttondown 會回一個
+          帶 CAPTCHA 的驗證頁，需要使用者親自點一下才算訂閱。藏起來的話畫面會
+          宣稱成功，而名單裡什麼都不會出現。
+
           價格在 src/strings.*.json，不要在產生出來的 HTML 裡改。
         -->
         <form id="waitlist"
               action="https://buttondown.com/api/emails/embed-subscribe/coding_afternoon"
-              method="post"
-              target="bd-sink">
+              method="post">
           <input type="hidden" name="embed" value="1">
           <input type="hidden" name="tag" value="landing">
           <input type="hidden" name="metadata__lang" value="en">
@@ -715,14 +717,12 @@
             <input id="wants" type="text" name="metadata__wants" maxlength="140" placeholder="e.g. full-text search, a Windows build, export to PDF…">
           </div>
 
+          <p class="promise">You will land on Buttondown's page — <strong>one click there and you are on the list</strong>.</p>
           <p class="promise">Right now this is <strong>macOS on Apple Silicon</strong> only — if you are on something else, say so in the box above. I am counting who is waiting.</p>
           <p class="promise">Two emails, ever: "you can download it" and "the hosted parts are live". <strong>No newsletter, nothing passed on to anyone, and one reply saying stop removes you.</strong></p>
 
           <p class="formstate" id="formstate" role="status" aria-live="polite" hidden></p>
         </form>
-
-        <!-- 表單送進這個看不見的 frame，人就留在這一頁上 -->
-        <iframe name="bd-sink" id="bd-sink" title="Got it. I will write when you can download it." tabindex="-1" aria-hidden="true"></iframe>
       </div>
     </div>
   </section>
@@ -736,36 +736,24 @@
 
 <script>
 /*
-   * The form posts into a hidden frame instead of navigating away, so the
-   * reader stays on the page. We cannot read that frame (different origin),
-   * so a load after a submit is all the confirmation available -- which is
-   * why the wording says "收到了" rather than claiming it succeeded.
-   * With scripting off the form still posts; it just lands on Buttondown's
-   * own confirmation page.
-   */
-  (function () {
-    var form = document.getElementById('waitlist');
-    var sink = document.getElementById('bd-sink');
-    var state = document.getElementById('formstate');
-    if (!form || !sink || !state) return;
+ * The form navigates to Buttondown, which answers with a verification page the
+ * reader has to click. That step cannot be hidden — posting into an invisible
+ * frame swallows it, and the page then claims a success that never happened.
+ * So all this does is stop a second submit while the first one is leaving.
+ */
+(function () {
+  var form = document.getElementById('waitlist');
+  var state = document.getElementById('formstate');
+  if (!form || !state) return;
 
-    var submitted = false;
+  form.addEventListener('submit', function () {
     var button = form.querySelector('button[type="submit"]');
-
-    form.addEventListener('submit', function () {
-      submitted = true;
-      state.hidden = false;
-      state.className = 'formstate';
-      state.textContent = 'Sending…';
-    });
-
-    sink.addEventListener('load', function () {
-      if (!submitted) return; // the frame also loads once with the page itself
-      state.className = 'formstate formstate--done';
-      state.textContent = 'Got it. I will write when you can download it.';
-      if (button) button.disabled = true;
-    });
-  })();
+    if (button) button.disabled = true;
+    state.hidden = false;
+    state.className = 'formstate';
+    state.textContent = 'Sending…';
+  });
+})();
 </script>
 
 </body>
